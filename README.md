@@ -1,4 +1,4 @@
-# Zai Chat — Branching AI Conversations + Resume Analyzer
+# ai Chat — Branching AI Conversations + Resume Analyzer
 
 A production-ready Next.js 16 app featuring:
 
@@ -15,7 +15,7 @@ A production-ready Next.js 16 app featuring:
 | Framework | Next.js 16 (App Router) + TypeScript 5 |
 | Styling | Tailwind CSS 4 + shadcn/ui (New York) + Lucide icons |
 | Database | Prisma ORM (SQLite for local dev → PostgreSQL for Vercel) |
-| AI | `z-ai-web-dev-sdk` (Z.ai platform) **or** `@google/generative-ai` (local PC / Vercel) |
+| @google/generative-ai` (local PC / Vercel) |
 | State | Zustand (client) + TanStack Query (server) |
 | Auth | JWT (HS256 via Node crypto) + scrypt password hashing |
 
@@ -23,17 +23,17 @@ A production-ready Next.js 16 app featuring:
 
 ```bash
 # 1. Install dependencies
-bun install
+npm install
 
 # 2. Copy env file and fill in your values
-cp .env.example .env
+cp  .env
 #   → Set AI_PROVIDER=gemini and GEMINI_API_KEY=your-key
 
 # 3. Create the database
-bun run db:push
+npm run db:push
 
 # 4. Start dev server
-bun run dev
+npm  run dev
 ```
 
 Open `http://localhost:3000`, register an account, and start chatting.
