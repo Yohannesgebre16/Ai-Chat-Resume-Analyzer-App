@@ -1,0 +1,78 @@
+// Prisma schema — AI Resume Analyzer + Branching Chat
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  resumes  Resume[]
+  sessions ChatSession[]
+}
+
+model Resume {
+  id            String   @id @default(cuid())
+  userId        String
+  fileName      String
+  mimeType      String
+  extractedText String
+  analysis      String // JSON-encoded ResumeAnalysis
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session ChatSession?
+
+  @@index([userId])
+}
+
+model ChatSession {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+  resumeId String?   @unique
+  resume   Resume?   @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([updatedAt])
+}
+
+// Tree-based chat messages. parentMessageId + siblingIndex encode the branching tree.
+// childrenMessageIds is persisted (JSON string) AND derived on read for safety.
+model Message {
+  id              String   @id @default(cuid())
+  sessionId       String
+  role            String // 'user' | 'assistant'
+  content         String
+  parentMessageId String? // null => root message of the session
+  siblingIndex    Int      @default(0) // 0-based index among siblings
+  childrenIds     String   @default("[]") // JSON string[] for fast nav
+  model           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  session  ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  parent   Message?    @relation("MessageTree", fields: [parentMessageId], references: [id], onDelete: Cascade)
+  children Message[]   @relation("MessageTree")
+
+  @@index([sessionId])
+  @@index([parentMessageId])
+  @@index([sessionId, parentMessageId, siblingIndex])
+}
