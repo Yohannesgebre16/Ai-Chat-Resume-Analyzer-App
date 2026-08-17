@@ -1,39 +1,45 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Sparkles, Loader2, Mail, Lock, User as UserIcon } from 'lucide-react'
-import { useAuthStore } from '@/lib/auth-store'
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Sparkles, Loader2, Mail, Lock, User as UserIcon } from "lucide-react";
+import { useAuthStore } from "@/lib/auth-store";
 
 export function AuthScreen() {
-  const { login, register } = useAuthStore()
-  const [mode, setMode] = useState<'login' | 'register'>('login')
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [busy, setBusy] = useState(false)
-  const [err, setErr] = useState<string | null>(null)
+  const { login, register } = useAuthStore();
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
   const submit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setBusy(true)
-    setErr(null)
+    e.preventDefault();
+    setBusy(true);
+    setErr(null);
     try {
-      if (mode === 'register') {
-        await register(name, email, password)
+      if (mode === "register") {
+        await register(name, email, password);
       } else {
-        await login(email, password)
+        await login(email, password);
       }
     } catch (e: any) {
-      setErr(e.message || 'Authentication failed')
+      setErr(e.message || "Authentication failed");
     } finally {
-      setBusy(false)
+      setBusy(false);
     }
-  }
+  };
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background p-4">
@@ -47,7 +53,7 @@ export function AuthScreen() {
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-full max-w-md"
       >
         <Card className="border-border/60 shadow-2xl shadow-black/20 backdrop-blur">
@@ -55,7 +61,7 @@ export function AuthScreen() {
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <Sparkles className="h-6 w-6" />
             </div>
-            <CardTitle className="text-2xl">Zai Chat</CardTitle>
+            <CardTitle className="text-2xl">Shega Ai</CardTitle>
             <CardDescription>
               AI chat with branching conversations &amp; resume analysis
             </CardDescription>
@@ -63,15 +69,18 @@ export function AuthScreen() {
           <CardContent>
             <form onSubmit={submit} className="space-y-4">
               <AnimatePresence mode="popLayout">
-                {mode === 'register' && (
+                {mode === "register" && (
                   <motion.div
                     key="name"
                     initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
+                    animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     className="overflow-hidden"
                   >
-                    <Label htmlFor="name" className="mb-1.5 block text-xs font-medium">
+                    <Label
+                      htmlFor="name"
+                      className="mb-1.5 block text-xs font-medium"
+                    >
                       Name
                     </Label>
                     <div className="relative">
@@ -91,7 +100,10 @@ export function AuthScreen() {
               </AnimatePresence>
 
               <div>
-                <Label htmlFor="email" className="mb-1.5 block text-xs font-medium">
+                <Label
+                  htmlFor="email"
+                  className="mb-1.5 block text-xs font-medium"
+                >
                   Email
                 </Label>
                 <div className="relative">
@@ -110,7 +122,10 @@ export function AuthScreen() {
               </div>
 
               <div>
-                <Label htmlFor="password" className="mb-1.5 block text-xs font-medium">
+                <Label
+                  htmlFor="password"
+                  className="mb-1.5 block text-xs font-medium"
+                >
                   Password
                 </Label>
                 <div className="relative">
@@ -122,7 +137,9 @@ export function AuthScreen() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="pl-9"
-                    autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                    autoComplete={
+                      mode === "login" ? "current-password" : "new-password"
+                    }
                     required
                     minLength={6}
                   />
@@ -137,20 +154,22 @@ export function AuthScreen() {
 
               <Button type="submit" disabled={busy} className="w-full">
                 {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {mode === 'login' ? 'Sign in' : 'Create account'}
+                {mode === "login" ? "Sign in" : "Create account"}
               </Button>
 
               <p className="text-center text-xs text-muted-foreground">
-                {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+                {mode === "login"
+                  ? "Don't have an account? "
+                  : "Already have an account? "}
                 <button
                   type="button"
                   onClick={() => {
-                    setMode(mode === 'login' ? 'register' : 'login')
-                    setErr(null)
+                    setMode(mode === "login" ? "register" : "login");
+                    setErr(null);
                   }}
                   className="font-medium text-primary underline underline-offset-2 hover:opacity-80"
                 >
-                  {mode === 'login' ? 'Sign up' : 'Sign in'}
+                  {mode === "login" ? "Sign up" : "Sign in"}
                 </button>
               </p>
             </form>
@@ -161,5 +180,5 @@ export function AuthScreen() {
         </p>
       </motion.div>
     </div>
-  )
+  );
 }
