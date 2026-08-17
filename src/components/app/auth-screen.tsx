@@ -175,9 +175,7 @@ export function AuthScreen() {
             </form>
           </CardContent>
         </Card>
-        <p className="mt-4 text-center text-[11px] text-muted-foreground">
-          Demo app · credentials are stored locally in SQLite
-        </p>
+        <p className="mt-4 text-center text-[11px] text-muted-foreground"></p>
       </motion.div>
     </div>
   );
